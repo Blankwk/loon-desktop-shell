@@ -25,6 +25,8 @@ HEADERS += \
 TRANSLATIONS += \
     desktop_shell_zh_CN.ts
 
+RESOURCES += resources.qrc
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

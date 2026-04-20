@@ -53,9 +53,11 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = main.cpp \
-		mainwindow.cpp moc_mainwindow.cpp
+		mainwindow.cpp qrc_resources.cpp \
+		moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
+		qrc_resources.o \
 		moc_mainwindow.o
 DIST          = ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/spec_pre.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/common/unix.conf \
@@ -131,6 +133,7 @@ DIST          = ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-l
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/qt_config.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++/qmake.conf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/exclusive_builds.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/toolchain.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/default_pre.prf \
@@ -236,6 +239,7 @@ Makefile: desktop_shell.pro ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysro
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/qt_config.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++/qmake.conf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/exclusive_builds.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/toolchain.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/default_pre.prf \
@@ -254,7 +258,8 @@ Makefile: desktop_shell.pro ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysro
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/exceptions.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/yacc.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/lex.prf \
-		desktop_shell.pro
+		desktop_shell.pro \
+		resources.qrc
 	$(QMAKE) -o Makefile desktop_shell.pro
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/spec_pre.prf:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/common/unix.conf:
@@ -330,6 +335,7 @@ Makefile: desktop_shell.pro ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysro
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/qt_config.prf:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++/qmake.conf:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/exclusive_builds.prf:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/toolchain.prf:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/default_pre.prf:
@@ -349,6 +355,7 @@ Makefile: desktop_shell.pro ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysro
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/yacc.prf:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/lex.prf:
 desktop_shell.pro:
+resources.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile desktop_shell.pro
 
@@ -363,6 +370,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.h $(DISTDIR)/
 	$(COPY_FILE) --parents main.cpp mainwindow.cpp $(DISTDIR)/
@@ -390,8 +398,14 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_resources.cpp
+qrc_resources.cpp: resources.qrc \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/rcc \
+		images/bg.jpg
+	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -524,7 +538,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean 
 
 ####### Compile
 
@@ -784,6 +798,9 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QVBoxLayout \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
+
+qrc_resources.o: qrc_resources.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

@@ -57,6 +57,7 @@ void MainWindow::setupUi()
 
     // 右侧区域
     QWidget *rightContainer = new QWidget(this);
+    rightContainer->setObjectName("rightContainer");
     QVBoxLayout *rightLayout = new QVBoxLayout(rightContainer);
     rightLayout->setContentsMargins(0, 0, 0, 0);
     rightLayout->setSpacing(0);
@@ -77,16 +78,30 @@ void MainWindow::setupUi()
     m_stack = new QStackedWidget(this);
 
     QWidget *pageHome = new QWidget(this);
+    pageHome->setObjectName("pageHome");
     QVBoxLayout *homeLayout = new QVBoxLayout(pageHome);
     QLabel *homeLabel = new QLabel("这是桌面首页", pageHome);
-    homeLabel->setStyleSheet("font-size: 22px; color: white;");
+    homeLabel->setStyleSheet(
+    "font-size: 22px;"
+    "color: white;"
+    "background-color: rgba(15, 23, 42, 150);"
+    "padding: 12px 16px;"
+    "border-radius: 8px;"
+    );
     homeLayout->addWidget(homeLabel);
     homeLayout->addStretch();
 
     QWidget *pageFile = new QWidget(this);
+    pageFile->setObjectName("pageFile");
     QVBoxLayout *fileLayout = new QVBoxLayout(pageFile);
     QLabel *fileLabel = new QLabel("这是文件管理器页面", pageFile);
-    fileLabel->setStyleSheet("font-size: 22px; color: white;");
+    fileLabel->setStyleSheet(
+    "font-size: 22px;"
+    "color: white;"
+    "background-color: rgba(15, 23, 42, 150);"
+    "padding: 12px 16px;"
+    "border-radius: 8px;"
+    );
     fileLayout->addWidget(fileLabel);
     fileLayout->addStretch();
 
@@ -107,12 +122,13 @@ void MainWindow::setupStyle()
             background: #111827;
         }
 
+        /* 默认文字颜色，不再给所有 QWidget 强制涂黑背景 */
         QWidget {
-            background: #111827;
             color: white;
             font-size: 16px;
         }
 
+        /* 左侧导航栏仍然保持深色 */
         #sidebarFrame {
             background: #0f172a;
             border-right: 1px solid #1f2937;
@@ -123,19 +139,28 @@ void MainWindow::setupStyle()
             font-weight: bold;
             color: white;
             padding: 8px 4px;
+            background: transparent;
         }
 
+        /* 右侧主区域放背景图 */
+        #rightContainer {
+            border-image: url(:/images/bg.jpg) 0 0 0 0 stretch stretch;
+        }
+
+        /* 顶部栏做半透明，更有层次 */
         #topBarFrame {
-            background: #111827;
-            border-bottom: 1px solid #1f2937;
+            background: rgba(17, 24, 39, 180);
+            border-bottom: 1px solid rgba(31, 41, 55, 180);
         }
 
         #titleLabel {
             font-size: 22px;
             font-weight: 600;
             color: white;
+            background: transparent;
         }
 
+        /* 导航列表透明，这样能融进左侧栏 */
         QListWidget {
             background: transparent;
             color: #cbd5e1;
@@ -158,6 +183,19 @@ void MainWindow::setupStyle()
 
         QListWidget::item:hover {
             background: #1e293b;
+        }
+
+        /* 关键：页面区透明，不要挡住背景图 */
+        QStackedWidget {
+            background: transparent;
+        }
+
+        #pageHome, #pageFile {
+            background: transparent;
+        }
+
+        QLabel {
+            background: transparent;
         }
 
         QStatusBar {
