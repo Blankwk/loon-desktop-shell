@@ -22,3 +22,5 @@ build/
 build-*/
 
 moc_predefs.h
+
+desktop_shell
