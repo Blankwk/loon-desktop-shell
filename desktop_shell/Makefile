@@ -17,7 +17,7 @@ CXX           = ${_SDK_PATH}/sysroots/x86_64-linux/bin/toolchain-loongarch64-lin
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -Os --sysroot=/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -Os --sysroot=/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot -std=gnu++11 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5 -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore -I. -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++
+INCPATH       = -I. -Isrc -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5 -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore -I. -I. -I../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++
 QMAKE         = /home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -52,9 +52,9 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = main.cpp \
-		mainwindow.cpp \
-		pages/filepage.cpp qrc_resources.cpp \
+SOURCES       = src/main.cpp \
+		src/shell/mainwindow.cpp \
+		src/pages/filepage.cpp qrc_resources.cpp \
 		moc_mainwindow.cpp \
 		moc_filepage.cpp
 OBJECTS       = main.o \
@@ -156,10 +156,10 @@ DIST          = ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-l
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/exceptions.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/yacc.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/lex.prf \
-		desktop_shell.pro mainwindow.h \
-		pages/filepage.h main.cpp \
-		mainwindow.cpp \
-		pages/filepage.cpp
+		desktop_shell.pro src/shell/mainwindow.h \
+		src/pages/filepage.h src/main.cpp \
+		src/shell/mainwindow.cpp \
+		src/pages/filepage.cpp
 QMAKE_TARGET  = desktop_shell
 DESTDIR       = 
 TARGET        = desktop_shell
@@ -168,7 +168,7 @@ TARGET        = desktop_shell
 first: all
 ####### Build rules
 
-desktop_shell:  $(OBJECTS)  
+desktop_shell: ui_mainwindow.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: desktop_shell.pro ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++/qmake.conf ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/spec_pre.prf \
@@ -265,7 +265,7 @@ Makefile: desktop_shell.pro ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysro
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/yacc.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/lex.prf \
 		desktop_shell.pro \
-		resources.qrc
+		resources/resources.qrc
 	$(QMAKE) -o Makefile desktop_shell.pro
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/spec_pre.prf:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/common/unix.conf:
@@ -361,7 +361,7 @@ Makefile: desktop_shell.pro ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysro
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/yacc.prf:
 ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/lex.prf:
 desktop_shell.pro:
-resources.qrc:
+resources/resources.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile desktop_shell.pro
 
@@ -376,11 +376,11 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
+	$(COPY_FILE) --parents resources/resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h pages/filepage.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp pages/filepage.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents desktop_shell_zh_CN.ts $(DISTDIR)/
+	$(COPY_FILE) --parents src/shell/mainwindow.h src/pages/filepage.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/shell/mainwindow.cpp src/pages/filepage.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ui/mainwindow.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -407,10 +407,10 @@ benchmark: first
 compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
-qrc_resources.cpp: resources.qrc \
+qrc_resources.cpp: resources/resources.qrc \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/rcc \
-		images/bg.jpg
-	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
+		resources/images/bg.jpg
+	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/rcc -name resources resources/resources.qrc -o qrc_resources.cpp
 
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
@@ -421,7 +421,7 @@ moc_predefs.h: ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-li
 compiler_moc_header_make_all: moc_mainwindow.cpp moc_filepage.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp moc_filepage.cpp
-moc_mainwindow.cpp: mainwindow.h \
+moc_mainwindow.cpp: src/shell/mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QMainWindow \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qmainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgetsglobal.h \
@@ -530,9 +530,9 @@ moc_mainwindow.cpp: mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qicon.h \
 		moc_predefs.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc
-	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc $(DEFINES) --include /home/kw/desktop_shell/desktop_shell/moc_predefs.h -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++ -I/home/kw/desktop_shell/desktop_shell -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5 -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include-fixed -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++ -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++/backward -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc $(DEFINES) --include /home/kw/desktop_shell/desktop_shell/moc_predefs.h -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++ -I/home/kw/desktop_shell/desktop_shell -I/home/kw/desktop_shell/desktop_shell/src -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5 -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include-fixed -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++ -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++/backward -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include src/shell/mainwindow.h -o moc_mainwindow.cpp
 
-moc_filepage.cpp: pages/filepage.h \
+moc_filepage.cpp: src/pages/filepage.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QWidget \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qwidget.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgetsglobal.h \
@@ -640,25 +640,30 @@ moc_filepage.cpp: pages/filepage.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qabstractitemmodel.h \
 		moc_predefs.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc
-	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc $(DEFINES) --include /home/kw/desktop_shell/desktop_shell/moc_predefs.h -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++ -I/home/kw/desktop_shell/desktop_shell -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5 -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include-fixed -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++ -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++/backward -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include pages/filepage.h -o moc_filepage.cpp
+	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc $(DEFINES) --include /home/kw/desktop_shell/desktop_shell/moc_predefs.h -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++ -I/home/kw/desktop_shell/desktop_shell -I/home/kw/desktop_shell/desktop_shell/src -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5 -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include-fixed -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++ -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++/backward -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include src/pages/filepage.h -o moc_filepage.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all:
+compiler_uic_make_all: ui_mainwindow.h
 compiler_uic_clean:
+	-$(DEL_FILE) ui_mainwindow.h
+ui_mainwindow.h: ui/mainwindow.ui \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/uic
+	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/uic ui/mainwindow.ui -o ui_mainwindow.h
+
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
 compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
-main.o: main.cpp mainwindow.h \
+main.o: src/main.cpp src/shell/mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QMainWindow \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qmainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgetsglobal.h \
@@ -772,9 +777,9 @@ main.o: main.cpp mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qdesktopwidget.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qguiapplication.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qinputmethod.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o src/main.cpp
 
-mainwindow.o: mainwindow.cpp mainwindow.h \
+mainwindow.o: src/shell/mainwindow.cpp src/shell/mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QMainWindow \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qmainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgetsglobal.h \
@@ -881,7 +886,7 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtouchdevice.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtabwidget.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qicon.h \
-		pages/filepage.h \
+		src/pages/filepage.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QWidget \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QModelIndex \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qabstractitemmodel.h \
@@ -916,9 +921,9 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QStatusBar \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qstatusbar.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QVBoxLayout
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o src/shell/mainwindow.cpp
 
-filepage.o: pages/filepage.cpp pages/filepage.h \
+filepage.o: src/pages/filepage.cpp src/pages/filepage.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QWidget \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qwidget.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgetsglobal.h \
@@ -1076,8 +1081,15 @@ filepage.o: pages/filepage.cpp pages/filepage.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtextoption.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QItemSelectionModel \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QAbstractItemView \
-		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QDebug
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o filepage.o pages/filepage.cpp
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QDebug \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QComboBox \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qcombobox.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QSortFilterProxyModel \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsortfilterproxymodel.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qabstractproxymodel.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QDateTime \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdatetime.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o filepage.o src/pages/filepage.cpp
 
 qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp

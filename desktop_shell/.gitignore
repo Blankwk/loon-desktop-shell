@@ -1,0 +1,22 @@
+# Qt Creator
+*.pro.user
+*.user
+*.user.*
+CMakeLists.txt.user
+
+# qmake / build
+Makefile
+.qmake.stash
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+*.o
+*.obj
+
+# binaries
+desktop_shell
+*.exe
+
+# build dirs
+build/
+build-*/

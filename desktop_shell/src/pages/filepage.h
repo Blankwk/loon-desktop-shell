@@ -11,6 +11,8 @@ class QLabel;
 class QPushButton;
 class QLineEdit;
 class QCheckBox;
+class QComboBox;
+class FileFilterProxyModel;
 
 /**
  * @brief 独立的文件管理器页面
@@ -78,6 +80,27 @@ private slots:
     void onCurrentSelectionChanged(const QModelIndex &current,
                                    const QModelIndex &previous);
 
+        /**
+     * @brief 类型过滤下拉框变化时触发
+     * @param index 下拉框当前索引
+     *
+     * 用于切换右侧文件列表的过滤模式：
+     * - 全部
+     * - 仅目录
+     * - 图片
+     * - 音频
+     * - 视频
+     */
+    void onTypeFilterChanged(int index);
+
+    /**
+     * @brief 排序方式下拉框变化时触发
+     * @param index 下拉框当前索引
+     *
+     * 用于切换右侧文件列表的排序规则。
+     */
+    void onSortModeChanged(int index);
+
 private:
     void setupUi();
     void setupModel();
@@ -104,6 +127,13 @@ private:
      * - 当前选中项名称和类型
      */
     void updateStatusInfo();
+
+    /**
+     * @brief 根据当前排序下拉框设置右侧表格排序规则
+     *
+     * 支持名称 / 大小 / 修改时间的升序和降序。
+     */
+    void applySortMode();
 
 private:
         /**
@@ -138,6 +168,29 @@ private:
     QTableView *m_tableView = nullptr;
 
     QFileSystemModel *m_model = nullptr;
+
+        /**
+     * @brief 类型过滤下拉框
+     *
+     * 用于切换右侧文件列表过滤模式。
+     */
+    QComboBox *m_typeFilterCombo = nullptr;
+
+    /**
+     * @brief 排序方式下拉框
+     *
+     * 用于切换右侧文件列表排序方式。
+     */
+    QComboBox *m_sortCombo = nullptr;
+
+    /**
+     * @brief 右侧文件列表使用的代理模型
+     *
+     * 说明：
+     * - 左侧目录树仍然直接使用 QFileSystemModel
+     * - 右侧文件列表通过代理模型实现筛选和排序
+     */
+    FileFilterProxyModel *m_proxyModel = nullptr;
 };
 
 #endif // FILEPAGE_H
