@@ -17,10 +17,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    pages/filepage.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    pages/filepage.h
 
 TRANSLATIONS += \
     desktop_shell_zh_CN.ts

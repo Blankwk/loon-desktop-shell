@@ -53,12 +53,16 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = main.cpp \
-		mainwindow.cpp qrc_resources.cpp \
-		moc_mainwindow.cpp
+		mainwindow.cpp \
+		pages/filepage.cpp qrc_resources.cpp \
+		moc_mainwindow.cpp \
+		moc_filepage.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
+		filepage.o \
 		qrc_resources.o \
-		moc_mainwindow.o
+		moc_mainwindow.o \
+		moc_filepage.o
 DIST          = ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/spec_pre.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/common/unix.conf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/common/linux.conf \
@@ -152,8 +156,10 @@ DIST          = ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-l
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/exceptions.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/yacc.prf \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/lex.prf \
-		desktop_shell.pro mainwindow.h main.cpp \
-		mainwindow.cpp
+		desktop_shell.pro mainwindow.h \
+		pages/filepage.h main.cpp \
+		mainwindow.cpp \
+		pages/filepage.cpp
 QMAKE_TARGET  = desktop_shell
 DESTDIR       = 
 TARGET        = desktop_shell
@@ -372,8 +378,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h pages/filepage.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp pages/filepage.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents desktop_shell_zh_CN.ts $(DISTDIR)/
 
 
@@ -412,9 +418,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/data/dummy.cpp
 	${_SDK_PATH}/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/bin/loongarch64-linux-gnu-g++ -pipe -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -Os --sysroot=/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot -std=gnu++11 -Wall -Wextra -dM -E -o moc_predefs.h ../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_filepage.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_filepage.cpp
 moc_mainwindow.cpp: mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QMainWindow \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qmainwindow.h \
@@ -525,6 +531,116 @@ moc_mainwindow.cpp: mainwindow.h \
 		moc_predefs.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc
 	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc $(DEFINES) --include /home/kw/desktop_shell/desktop_shell/moc_predefs.h -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++ -I/home/kw/desktop_shell/desktop_shell -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5 -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include-fixed -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++ -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++/backward -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include mainwindow.h -o moc_mainwindow.cpp
+
+moc_filepage.cpp: pages/filepage.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QWidget \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qwidget.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgetsglobal.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtguiglobal.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qglobal.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qconfig-bootstrapped.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qconfig.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qtcore-config.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsystemdetection.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qprocessordetection.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcompilerdetection.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qtypeinfo.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsysinfo.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qlogging.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qflags.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qatomic.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qbasicatomic.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qgenericatomic.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qatomic_msvc.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qglobalstatic.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qmutex.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qnumeric.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qversiontagging.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtgui-config.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgets-config.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qwindowdefs.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qobjectdefs.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qnamespace.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qobject.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstring.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qchar.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qbytearray.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qrefcount.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qarraydata.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringliteral.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringalgorithms.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringview.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringbuilder.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qlist.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qalgorithms.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qiterator.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qhashfunctions.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qpair.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qvector.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcontainertools_impl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qpoint.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qbytearraylist.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringlist.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qregexp.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringmatcher.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcoreevent.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qscopedpointer.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qmetatype.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qvarlengtharray.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcontainerfwd.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qobject_impl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qmargins.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpaintdevice.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qrect.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsize.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpalette.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qcolor.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qrgb.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qrgba64.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qbrush.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qmatrix.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpolygon.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qregion.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdatastream.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qiodevice.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qline.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtransform.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qimage.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpixelformat.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpixmap.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsharedpointer.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qshareddata.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qhash.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qfont.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qfontmetrics.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qfontinfo.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qcursor.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qkeysequence.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qevent.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qvariant.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qmap.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdebug.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qtextstream.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qlocale.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qset.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcontiguouscache.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qurl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qurlquery.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qfile.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qfiledevice.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qvector2d.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtouchdevice.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QModelIndex \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qabstractitemmodel.h \
+		moc_predefs.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc
+	/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/moc $(DEFINES) --include /home/kw/desktop_shell/desktop_shell/moc_predefs.h -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/mkspecs/devices/linux-buildroot-g++ -I/home/kw/desktop_shell/desktop_shell -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5 -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/bin/toolchain-loongarch64-linux-gnu-gcc8-host-x86_64-2022-07-18/lib/gcc/loongarch64-linux-gnu/8.3.0/include-fixed -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++ -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/c++/backward -I/home/kw/2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include pages/filepage.h -o moc_filepage.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -765,6 +881,11 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtouchdevice.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtabwidget.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qicon.h \
+		pages/filepage.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QWidget \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QModelIndex \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qabstractitemmodel.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QDebug \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QFrame \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qframe.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QHBoxLayout \
@@ -779,7 +900,6 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qlistview.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractitemview.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractscrollarea.h \
-		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qabstractitemmodel.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qitemselectionmodel.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractitemdelegate.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qstyleoption.h \
@@ -795,15 +915,167 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qstackedwidget.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QStatusBar \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qstatusbar.h \
-		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QVBoxLayout \
-		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QWidget
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QVBoxLayout
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
+
+filepage.o: pages/filepage.cpp pages/filepage.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QWidget \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qwidget.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgetsglobal.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtguiglobal.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qglobal.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qconfig-bootstrapped.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qconfig.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qtcore-config.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsystemdetection.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qprocessordetection.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcompilerdetection.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qtypeinfo.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsysinfo.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qlogging.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qflags.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qatomic.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qbasicatomic.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qgenericatomic.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qatomic_msvc.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qglobalstatic.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qmutex.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qnumeric.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qversiontagging.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtgui-config.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtwidgets-config.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qwindowdefs.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qobjectdefs.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qnamespace.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qobject.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstring.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qchar.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qbytearray.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qrefcount.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qarraydata.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringliteral.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringalgorithms.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringview.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringbuilder.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qlist.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qalgorithms.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qiterator.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qhashfunctions.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qpair.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qvector.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcontainertools_impl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qpoint.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qbytearraylist.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringlist.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qregexp.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qstringmatcher.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcoreevent.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qscopedpointer.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qmetatype.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qvarlengtharray.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcontainerfwd.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qobject_impl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qmargins.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpaintdevice.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qrect.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsize.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpalette.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qcolor.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qrgb.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qrgba64.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qbrush.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qmatrix.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpolygon.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qregion.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdatastream.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qiodevice.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qline.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtransform.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qimage.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpixelformat.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qpixmap.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsharedpointer.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qshareddata.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qhash.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qfont.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qfontmetrics.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qfontinfo.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qcursor.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qkeysequence.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qevent.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qvariant.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qmap.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdebug.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qtextstream.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qlocale.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qset.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qcontiguouscache.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qurl.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qurlquery.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qfile.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qfiledevice.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qvector2d.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qtouchdevice.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QModelIndex \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qabstractitemmodel.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QFileInfo \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qfileinfo.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QFileSystemModel \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qfilesystemmodel.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdir.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qicon.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdiriterator.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QHeaderView \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qheaderview.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractitemview.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractscrollarea.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qframe.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qitemselectionmodel.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractitemdelegate.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qstyleoption.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractspinbox.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/qvalidator.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qregularexpression.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qslider.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractslider.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qstyle.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtabbar.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtabwidget.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qrubberband.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QHBoxLayout \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qboxlayout.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qlayout.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qlayoutitem.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qgridlayout.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QLabel \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qlabel.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QPushButton \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qpushbutton.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qabstractbutton.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QSplitter \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qsplitter.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QTableView \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtableview.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QTreeView \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qtreeview.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QVBoxLayout \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QDir
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o filepage.o pages/filepage.cpp
 
 qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_filepage.o: moc_filepage.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_filepage.o moc_filepage.cpp
 
 ####### Install
 

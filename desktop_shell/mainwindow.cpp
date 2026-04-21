@@ -1,5 +1,7 @@
 #include "mainwindow.h"
+#include "pages/filepage.h"
 
+#include <QDebug>
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -21,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_navList, SIGNAL(currentRowChanged(int)),
             this, SLOT(onPageChanged(int)));
+
+    connect(m_filePage, &FilePage::fileActivated,
+        this, &MainWindow::onFileActivated);
 
     statusBar()->showMessage("系统已启动");
 }
@@ -93,20 +98,19 @@ void MainWindow::setupUi()
 
     QWidget *pageFile = new QWidget(this);
     pageFile->setObjectName("pageFile");
-    QVBoxLayout *fileLayout = new QVBoxLayout(pageFile);
-    QLabel *fileLabel = new QLabel("这是文件管理器页面", pageFile);
-    fileLabel->setStyleSheet(
-    "font-size: 22px;"
-    "color: white;"
-    "background-color: rgba(15, 23, 42, 150);"
-    "padding: 12px 16px;"
-    "border-radius: 8px;"
-    );
-    fileLayout->addWidget(fileLabel);
-    fileLayout->addStretch();
 
+    QVBoxLayout *fileLayout = new QVBoxLayout(pageFile);
+    fileLayout->setContentsMargins(0, 0, 0, 0);
+    fileLayout->setSpacing(0);
+
+    m_filePage = new FilePage(pageFile);
+    m_filePage->setObjectName("filePageContent");
+
+    fileLayout->addWidget(m_filePage);
+    
     m_stack->addWidget(pageHome);
     m_stack->addWidget(pageFile);
+
 
     rightLayout->addWidget(topBarFrame);
     rightLayout->addWidget(m_stack);
@@ -190,7 +194,7 @@ void MainWindow::setupStyle()
             background: transparent;
         }
 
-        #pageHome, #pageFile {
+        #pageHome, #pageFile, #filePageContent {
             background: transparent;
         }
 
@@ -216,4 +220,10 @@ void MainWindow::onPageChanged(int index)
         m_titleLabel->setText("文件管理器");
         statusBar()->showMessage("当前页面：文件管理器");
     }
+}
+
+void MainWindow::onFileActivated(const QString &filePath)
+{
+    qDebug() << "file activated:" << filePath;
+    statusBar()->showMessage(QString("打开文件：%1").arg(filePath));
 }

@@ -6,6 +6,7 @@
 class QListWidget;
 class QStackedWidget;
 class QLabel;
+class FilePage;
 
 class MainWindow : public QMainWindow
 {
@@ -17,6 +18,7 @@ public:
 
 private slots:
     void onPageChanged(int index);
+    void onFileActivated(const QString &filePath);
 
 private:
     void setupUi();
@@ -26,6 +28,8 @@ private:
     QListWidget *m_navList = nullptr;
     QStackedWidget *m_stack = nullptr;
     QLabel *m_titleLabel = nullptr;
+
+    FilePage *m_filePage = nullptr;
 };
 
 #endif
