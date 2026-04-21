@@ -20,3 +20,5 @@ desktop_shell
 # build dirs
 build/
 build-*/
+
+moc_predefs.h
