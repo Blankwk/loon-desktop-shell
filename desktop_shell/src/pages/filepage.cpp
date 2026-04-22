@@ -19,6 +19,7 @@
 #include <QComboBox>
 #include <QSortFilterProxyModel>
 #include <QDateTime>
+#include <QListView>
 
 /**
  * @brief FilePage 专用的过滤代理模型
@@ -149,11 +150,23 @@ FilePage::FilePage(QWidget *parent)
 
 QString FilePage::currentPath() const
 {
-    if (!m_model || !m_tableView) {
+    if (!m_model || !m_tableView || !m_proxyModel) {
         return QString();
     }
 
-    return m_model->filePath(m_tableView->rootIndex());
+    // 右侧表格当前的 rootIndex 属于代理模型
+    QModelIndex proxyRootIndex = m_tableView->rootIndex();
+    if (!proxyRootIndex.isValid()) {
+        return QString();
+    }
+
+    // 先从代理模型索引映射回源模型索引
+    QModelIndex sourceRootIndex = m_proxyModel->mapToSource(proxyRootIndex);
+    if (!sourceRootIndex.isValid()) {
+        return QString();
+    }
+
+    return m_model->filePath(sourceRootIndex);
 }
 
 void FilePage::setupUi()
@@ -203,6 +216,16 @@ void FilePage::setupUi()
     m_sortCombo->addItem("大小降序");
     m_sortCombo->addItem("时间升序");
     m_sortCombo->addItem("时间降序");
+
+    // 给 QComboBox 指定一个明确的弹出列表视图
+    //
+    // 原因：
+    // 某些平台/样式下，QComboBox 默认弹出的列表控件样式不完全受
+    // QComboBox QAbstractItemView 样式表控制，容易出现白底白字。
+    //
+    // 显式指定 QListView 后，样式通常会稳定很多。
+    m_typeFilterCombo->setView(new QListView(this));
+    m_sortCombo->setView(new QListView(this));
 
     // 显示隐藏文件开关
     m_showHiddenCheckBox = new QCheckBox("显示隐藏文件", this);
@@ -327,31 +350,96 @@ void FilePage::setupUi()
 
     m_typeFilterCombo->setStyleSheet(
         "QComboBox {"
-        "  background-color: rgba(15, 23, 42, 160);"
-        "  border: 1px solid rgba(51, 65, 85, 180);"
+        "  background-color: rgba(15, 23, 42, 200);"   // 深色背景
+        "  color: white;"                              // 白色文字
+        "  border: 1px solid rgba(51, 65, 85, 200);"
         "  border-radius: 6px;"
-        "  padding: 6px 10px;"
-        "  color: white;"
+        "  padding: 6px 28px 6px 10px;"                // 右边留给下拉箭头
+        "}"
+        "QComboBox:hover {"
+        "  border: 1px solid rgba(96, 165, 250, 220);"
+        "}"
+        "QComboBox::drop-down {"
+        "  subcontrol-origin: padding;"
+        "  subcontrol-position: top right;"
+        "  width: 24px;"
+        "  border: none;"
+        "  background: transparent;"
+        "}"
+        "QComboBox::down-arrow {"
+        "  width: 10px;"
+        "  height: 10px;"
         "}"
         "QComboBox QAbstractItemView {"
-        "  background-color: rgba(15, 23, 42, 230);"
-        "  color: white;"
+        "  background-color: rgba(15, 23, 42, 240);"  // 弹出列表深色背景
+        "  color: white;"                              // 弹出列表白字
+        "  border: 1px solid rgba(51, 65, 85, 220);"
         "  selection-background-color: rgba(37, 99, 235, 220);"
+        "  selection-color: black;"
+        "  outline: 0;"
         "}"
     );
 
     m_sortCombo->setStyleSheet(
         "QComboBox {"
-        "  background-color: rgba(15, 23, 42, 160);"
-        "  border: 1px solid rgba(51, 65, 85, 180);"
-        "  border-radius: 6px;"
-        "  padding: 6px 10px;"
+        "  background-color: rgba(15, 23, 42, 200);"
         "  color: white;"
+        "  border: 1px solid rgba(51, 65, 85, 200);"
+        "  border-radius: 6px;"
+        "  padding: 6px 28px 6px 10px;"
+        "}"
+        "QComboBox:hover {"
+        "  border: 1px solid rgba(96, 165, 250, 220);"
+        "}"
+        "QComboBox::drop-down {"
+        "  subcontrol-origin: padding;"
+        "  subcontrol-position: top right;"
+        "  width: 24px;"
+        "  border: none;"
+        "  background: transparent;"
+        "}"
+        "QComboBox::down-arrow {"
+        "  width: 10px;"
+        "  height: 10px;"
         "}"
         "QComboBox QAbstractItemView {"
-        "  background-color: rgba(15, 23, 42, 230);"
+        "  background-color: rgba(15, 23, 42, 240);"
         "  color: white;"
+        "  border: 1px solid rgba(51, 65, 85, 220);"
         "  selection-background-color: rgba(37, 99, 235, 220);"
+        "  selection-color: black;"
+        "  outline: 0;"
+        "}"
+    );
+
+        // 让弹出列表每一项高度更统一，视觉更接近真正文件管理器
+    m_typeFilterCombo->view()->setStyleSheet(
+        "QListView {"
+        "  background-color: rgba(15, 23, 42, 240);"
+        "  color: white;"
+        "  border: 1px solid rgba(51, 65, 85, 220);"
+        "}"
+        "QListView::item {"
+        "  padding: 6px 10px;"
+        "}"
+        "QListView::item:selected {"
+        "  background-color: rgba(37, 99, 235, 220);"
+        "  color: white;"
+        "}"
+    );
+
+    m_sortCombo->view()->setStyleSheet(
+        "QListView {"
+        "  background-color: rgba(15, 23, 42, 240);"
+        "  color: white;"
+        "  border: 1px solid rgba(51, 65, 85, 220);"
+        "}"
+        "QListView::item {"
+        "  padding: 6px 10px;"
+        "}"
+        "QListView::item:selected {"
+        "  background-color: rgba(37, 99, 235, 220);"
+        "  color: white;"
         "}"
     );
 }

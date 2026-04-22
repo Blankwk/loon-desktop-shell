@@ -1088,7 +1088,9 @@ filepage.o: src/pages/filepage.cpp src/pages/filepage.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qsortfilterproxymodel.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qabstractproxymodel.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QDateTime \
-		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdatetime.h
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdatetime.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QListView \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qlistview.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o filepage.o src/pages/filepage.cpp
 
 qrc_resources.o: qrc_resources.cpp 
