@@ -20,6 +20,13 @@
 #include <QSortFilterProxyModel>
 #include <QDateTime>
 #include <QListView>
+#include <QMenu>
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QFile>
+#include <QPalette>
+#include <QColor>
+#include <QDialog>
 
 /**
  * @brief FilePage 专用的过滤代理模型
@@ -243,6 +250,9 @@ void FilePage::setupUi()
 
     m_treeView = new QTreeView(splitter);
     m_tableView = new QTableView(splitter);
+
+    // 使用自定义右键菜单，后面通过信号自己弹出菜单
+    m_tableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     splitter->addWidget(m_treeView);
     splitter->addWidget(m_tableView);
@@ -521,6 +531,10 @@ void FilePage::setupConnections()
     // 排序方式下拉框变化
     connect(m_sortCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &FilePage::onSortModeChanged);
+
+    // 右侧文件列表右键菜单
+    connect(m_tableView, &QTableView::customContextMenuRequested,
+            this, &FilePage::onTableContextMenuRequested);
 }
 
 void FilePage::setCurrentDirectory(const QString &path)
@@ -570,22 +584,10 @@ void FilePage::onTreeClicked(const QModelIndex &index)
 
 void FilePage::onTableDoubleClicked(const QModelIndex &index)
 {
-    if (!index.isValid()) {
-        return;
-    }
+    Q_UNUSED(index);
 
-    // 右侧表格传进来的是代理模型索引，
-    // 先映射回 QFileSystemModel 的源索引
-    QModelIndex sourceIndex = m_proxyModel->mapToSource(index);
-
-    const QString path = m_model->filePath(sourceIndex);
-    QFileInfo info(path);
-
-    if (info.isDir()) {
-        setCurrentDirectory(path);
-    } else if (info.isFile()) {
-        emit fileActivated(path);
-    }
+    // 双击行为和右键菜单里的“打开”统一复用
+    openCurrentItem();
 }
 
 void FilePage::onGoUpClicked()
@@ -814,4 +816,421 @@ void FilePage::onSortModeChanged(int index)
     Q_UNUSED(index);
 
     applySortMode();
+}
+
+QModelIndex FilePage::currentSourceIndex() const
+{
+    if (!m_tableView || !m_proxyModel) {
+        return QModelIndex();
+    }
+
+    // 右侧表格当前选中的 index 属于代理模型
+    QModelIndex proxyIndex = m_tableView->currentIndex();
+    if (!proxyIndex.isValid()) {
+        return QModelIndex();
+    }
+
+    // 映射回 QFileSystemModel 的源模型索引
+    return m_proxyModel->mapToSource(proxyIndex);
+}
+
+QString FilePage::humanReadableSize(qint64 bytes) const
+{
+    // 这个函数只是做简单格式化，便于“属性”对话框显示
+    if (bytes < 1024) {
+        return QString("%1 B").arg(bytes);
+    }
+
+    double kb = bytes / 1024.0;
+    if (kb < 1024.0) {
+        return QString::number(kb, 'f', 2) + " KB";
+    }
+
+    double mb = kb / 1024.0;
+    if (mb < 1024.0) {
+        return QString::number(mb, 'f', 2) + " MB";
+    }
+
+    double gb = mb / 1024.0;
+    return QString::number(gb, 'f', 2) + " GB";
+}
+
+void FilePage::onTableContextMenuRequested(const QPoint &pos)
+{
+    if (!m_tableView) {
+        return;
+    }
+
+    // 获取鼠标位置对应的代理模型索引
+    QModelIndex proxyIndex = m_tableView->indexAt(pos);
+
+    // 如果右键点到了某一项，就先把它设为当前选中项
+    // 这样后面的“打开/重命名/删除/属性”都作用于它
+    if (proxyIndex.isValid()) {
+        m_tableView->setCurrentIndex(proxyIndex);
+        updateStatusInfo();
+    }
+
+    QMenu menu(this);
+
+        // =========================
+    // 右键菜单样式：深色背景 + 白色文字 + 蓝色高亮
+    // 目的：
+    // 1. 避免默认主题下出现白底白字
+    // 2. 让菜单和当前整个深色界面风格保持一致
+    // =========================
+
+    // 先设置调色板，增强在某些平台下的兼容性
+    QPalette menuPalette;
+    menuPalette.setColor(QPalette::Window, QColor(15, 23, 42, 245));          // 菜单背景
+    menuPalette.setColor(QPalette::Base, QColor(15, 23, 42, 245));            // 基础背景
+    menuPalette.setColor(QPalette::WindowText, Qt::white);                    // 普通文字
+    menuPalette.setColor(QPalette::Text, Qt::white);                          // 文本颜色
+    menuPalette.setColor(QPalette::ButtonText, Qt::white);                    // 动作文字
+    menuPalette.setColor(QPalette::Highlight, QColor(37, 99, 235, 220));      // 选中背景
+    menuPalette.setColor(QPalette::HighlightedText, Qt::white);               // 选中文字
+
+    menu.setPalette(menuPalette);
+    menu.setAutoFillBackground(true);
+
+    // 再补一层样式表，统一边框、悬停效果、分隔线
+    menu.setStyleSheet(
+        "QMenu {"
+        "  background-color: rgba(15, 23, 42, 245);"
+        "  color: white;"
+        "  border: 1px solid rgba(51, 65, 85, 220);"
+        "  padding: 6px 4px;"
+        "}"
+        "QMenu::item {"
+        "  color: white;"
+        "  background-color: transparent;"
+        "  padding: 8px 24px 8px 16px;"
+        "  margin: 2px 4px;"
+        "  border-radius: 4px;"
+        "}"
+        "QMenu::item:selected {"
+        "  background-color: rgba(37, 99, 235, 220);"
+        "  color: white;"
+        "}"
+        "QMenu::item:disabled {"
+        "  color: rgba(255, 255, 255, 120);"
+        "}"
+        "QMenu::separator {"
+        "  height: 1px;"
+        "  background: rgba(148, 163, 184, 120);"
+        "  margin: 6px 10px;"
+        "}"
+    );
+
+    QAction *openAction = nullptr;
+    QAction *renameAction = nullptr;
+    QAction *deleteAction = nullptr;
+    QAction *propertiesAction = nullptr;
+
+    // 只有右键点到了具体文件/目录，才显示这些操作
+    if (proxyIndex.isValid()) {
+        openAction = menu.addAction("打开");
+        renameAction = menu.addAction("重命名");
+        deleteAction = menu.addAction("删除");
+        menu.addSeparator();
+        propertiesAction = menu.addAction("属性");
+        menu.addSeparator();
+    }
+
+    // 无论点到空白还是点到项目，都允许刷新
+    QAction *refreshAction = menu.addAction("刷新");
+
+    QAction *selectedAction = menu.exec(m_tableView->viewport()->mapToGlobal(pos));
+    if (!selectedAction) {
+        return;
+    }
+
+    if (selectedAction == openAction) {
+        openCurrentItem();
+    } else if (selectedAction == renameAction) {
+        renameCurrentItem();
+    } else if (selectedAction == deleteAction) {
+        deleteCurrentItem();
+    } else if (selectedAction == propertiesAction) {
+        showCurrentItemProperties();
+    } else if (selectedAction == refreshAction) {
+        onRefreshClicked();
+    }
+}
+
+void FilePage::openCurrentItem()
+{
+    QModelIndex sourceIndex = currentSourceIndex();
+    if (!sourceIndex.isValid()) {
+        m_statusLabel->setText("状态：未选中任何项目，无法重命名");
+        return;
+    }
+
+// 关键：重命名必须作用在“名称列”，也就是第 0 列
+sourceIndex = sourceIndex.sibling(sourceIndex.row(), 0);
+
+    const QString path = m_model->filePath(sourceIndex);
+    QFileInfo info(path);
+
+    // 如果是目录，就进入目录
+    if (info.isDir()) {
+        setCurrentDirectory(path);
+        return;
+    }
+
+    // 如果是普通文件，就把路径发给外层
+    if (info.isFile()) {
+        emit fileActivated(path);
+    }
+}
+
+void FilePage::renameCurrentItem()
+{
+    QModelIndex sourceIndex = currentSourceIndex();
+    if (!sourceIndex.isValid()) {
+        m_statusLabel->setText("状态：未选中任何项目，无法重命名");
+        return;
+    }
+
+    QFileInfo info(m_model->filePath(sourceIndex));
+    const QString oldName = info.fileName();
+
+    bool ok = false;
+    QString newName;
+
+    // =========================
+    // 手动创建输入对话框，而不是使用 QInputDialog::getText 静态函数
+    // 原因：
+    // 静态函数很难单独定制样式，容易出现白底白字
+    // =========================
+    QInputDialog dialog(this);
+    dialog.setWindowTitle("重命名");
+    dialog.setLabelText("请输入新的名称：");
+    dialog.setTextValue(oldName);
+    dialog.setOkButtonText("确定");
+    dialog.setCancelButtonText("取消");
+
+    // 应用深色样式
+    applyDialogStyle(&dialog);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        ok = true;
+        newName = dialog.textValue();
+    }
+
+    // 用户取消或输入为空时，直接返回
+    if (!ok || newName.trimmed().isEmpty()) {
+        return;
+    }
+
+    newName = newName.trimmed();
+
+    // 名称没有变化时，不做任何操作
+    if (newName == oldName) {
+        return;
+    }
+
+    // QFileSystemModel 支持通过 setData(EditRole) 修改名称
+    // 注意：
+    // 这里必须传“源模型索引”，不能传代理模型索引
+    bool result = m_model->setData(sourceIndex, newName, Qt::EditRole);
+
+    if (result) {
+        m_statusLabel->setText(QString("状态：重命名成功 -> %1").arg(newName));
+        onRefreshClicked();
+    } else {
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle("重命名失败");
+        msgBox.setText("无法完成重命名操作。");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        QAbstractButton *okButton = msgBox.button(QMessageBox::Ok);
+        if (okButton) okButton->setText("确定");
+
+        applyDialogStyle(&msgBox);
+        msgBox.exec();
+        m_statusLabel->setText("状态：重命名失败");
+    }
+}
+
+void FilePage::deleteCurrentItem()
+{
+    QModelIndex sourceIndex = currentSourceIndex();
+    if (!sourceIndex.isValid()) {
+        m_statusLabel->setText("状态：未选中任何项目，无法删除");
+        return;
+    }
+
+    const QString path = m_model->filePath(sourceIndex);
+    QFileInfo info(path);
+
+    QString prompt;
+    if (info.isDir()) {
+        prompt = QString("确定要删除目录及其全部内容吗？\n\n%1").arg(path);
+    } else {
+        prompt = QString("确定要删除文件吗？\n\n%1").arg(path);
+    }
+
+        // =========================
+    // 手动创建确认删除对话框
+    // 原因：
+    // QMessageBox::question 静态函数在某些平台下容易出现白底白字
+    // =========================
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("确认删除");
+    msgBox.setText(prompt);
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+
+    // 中文按钮文字可选：如果你喜欢也可以保留英文
+    QAbstractButton *yesButton = msgBox.button(QMessageBox::Yes);
+    QAbstractButton *noButton = msgBox.button(QMessageBox::No);
+    if (yesButton) yesButton->setText("确定");
+    if (noButton) noButton->setText("取消");
+
+    applyDialogStyle(&msgBox);
+
+    QMessageBox::StandardButton reply =
+        static_cast<QMessageBox::StandardButton>(msgBox.exec());
+
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+
+    bool result = false;
+
+    if (info.isDir()) {
+        // 目录：递归删除
+        QDir dir(path);
+        result = dir.removeRecursively();
+    } else {
+        // 文件：直接删除
+        result = QFile::remove(path);
+    }
+
+    if (result) {
+        m_statusLabel->setText(QString("状态：删除成功 -> %1").arg(path));
+        onRefreshClicked();
+    } else {
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle("删除失败");
+        msgBox.setText("无法完成删除操作。");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+
+        QAbstractButton *okButton = msgBox.button(QMessageBox::Ok);
+        if (okButton) okButton->setText("确定");
+
+        applyDialogStyle(&msgBox);
+        msgBox.exec();
+        m_statusLabel->setText("状态：删除失败");
+    }
+}
+
+void FilePage::showCurrentItemProperties()
+{
+    QModelIndex sourceIndex = currentSourceIndex();
+    if (!sourceIndex.isValid()) {
+        m_statusLabel->setText("状态：未选中任何项目，无法查看属性");
+        return;
+    }
+
+    const QString path = m_model->filePath(sourceIndex);
+    QFileInfo info(path);
+
+    QString typeText;
+    if (info.isSymLink()) {
+        typeText = "符号链接";
+    } else if (info.isDir()) {
+        typeText = "目录";
+    } else if (info.isFile()) {
+        typeText = "文件";
+    } else {
+        typeText = "未知";
+    }
+
+    QString detailText;
+    detailText += QString("名称：%1\n").arg(info.fileName());
+    detailText += QString("路径：%1\n").arg(info.absoluteFilePath());
+    detailText += QString("类型：%1\n").arg(typeText);
+
+    // 目录通常不做递归大小统计，这里只对普通文件显示大小
+    if (info.isFile()) {
+        detailText += QString("大小：%1\n").arg(humanReadableSize(info.size()));
+    }
+
+    detailText += QString("最后修改时间：%1\n")
+                      .arg(info.lastModified().toString("yyyy-MM-dd hh:mm:ss"));
+
+    if (info.isSymLink()) {
+        detailText += QString("链接目标：%1\n").arg(info.symLinkTarget());
+    }
+
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("属性");
+    msgBox.setText(detailText);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+
+    QAbstractButton *okButton = msgBox.button(QMessageBox::Ok);
+    if (okButton) okButton->setText("确定");
+
+    applyDialogStyle(&msgBox);
+    msgBox.exec();
+}
+
+void FilePage::applyDialogStyle(QWidget *widget)
+{
+    if (!widget) {
+        return;
+    }
+
+    // =========================
+    // 统一的深色对话框样式
+    //
+    // 目标：
+    // 1. 避免 QMessageBox / QInputDialog 出现白底白字
+    // 2. 和当前文件管理器深色主题保持一致
+    // =========================
+    widget->setStyleSheet(
+        "QDialog {"
+        "  background-color: rgba(15, 23, 42, 245);"
+        "  color: white;"
+        "}"
+        "QMessageBox {"
+        "  background-color: rgba(15, 23, 42, 245);"
+        "  color: white;"
+        "}"
+        "QInputDialog {"
+        "  background-color: rgba(15, 23, 42, 245);"
+        "  color: white;"
+        "}"
+        "QLabel {"
+        "  color: white;"
+        "  background: transparent;"
+        "}"
+        "QLineEdit {"
+        "  background-color: rgba(30, 41, 59, 230);"
+        "  color: white;"
+        "  border: 1px solid rgba(51, 65, 85, 220);"
+        "  border-radius: 6px;"
+        "  padding: 6px 10px;"
+        "}"
+        "QPushButton {"
+        "  background-color: rgba(30, 41, 59, 220);"
+        "  color: white;"
+        "  border: none;"
+        "  border-radius: 6px;"
+        "  padding: 8px 14px;"
+        "  min-width: 72px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: rgba(37, 99, 235, 220);"
+        "}"
+        "QPushButton:pressed {"
+        "  background-color: rgba(29, 78, 216, 230);"
+        "}"
+    );
 }

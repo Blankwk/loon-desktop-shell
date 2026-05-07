@@ -1090,7 +1090,20 @@ filepage.o: src/pages/filepage.cpp src/pages/filepage.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QDateTime \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/qdatetime.h \
 		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QListView \
-		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qlistview.h
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qlistview.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QMenu \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qmenu.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qaction.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qactiongroup.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QMessageBox \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qmessagebox.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qdialog.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QInputDialog \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/qinputdialog.h \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtCore/QFile \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/QPalette \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtGui/QColor \
+		../../2K1000/2k1000-buildroot-2021.02-sdk-v1.0/sysroots/x86_64-linux/loongarch64-buildroot-linux-gnu/sysroot/usr/include/qt5/QtWidgets/QDialog
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o filepage.o src/pages/filepage.cpp
 
 qrc_resources.o: qrc_resources.cpp 

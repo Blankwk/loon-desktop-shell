@@ -13,6 +13,7 @@ class QLineEdit;
 class QCheckBox;
 class QComboBox;
 class FileFilterProxyModel;
+class QPoint;
 
 /**
  * @brief 独立的文件管理器页面
@@ -101,6 +102,53 @@ private slots:
      */
     void onSortModeChanged(int index);
 
+        /**
+     * @brief 右侧文件列表的右键菜单请求
+     * @param pos 鼠标右键点击位置（相对于 tableView 视口）
+     *
+     * 作用：
+     * 1. 根据点击位置找到当前项
+     * 2. 弹出上下文菜单
+     * 3. 执行打开 / 刷新 / 重命名 / 删除 / 属性等操作
+     */
+    void onTableContextMenuRequested(const QPoint &pos);
+
+    /**
+     * @brief 打开当前选中项
+     *
+     * 行为：
+     * - 如果是目录：进入目录
+     * - 如果是文件：发出 fileActivated 信号，由 MainWindow 决定怎么处理
+     */
+    void openCurrentItem();
+
+    /**
+     * @brief 重命名当前选中项
+     */
+    void renameCurrentItem();
+
+    /**
+     * @brief 删除当前选中项
+     *
+     * 说明：
+     * - 文件：直接删除
+     * - 目录：递归删除
+     * - 删除前会弹确认框
+     */
+    void deleteCurrentItem();
+
+    /**
+     * @brief 显示当前选中项的属性信息
+     *
+     * 例如：
+     * - 名称
+     * - 路径
+     * - 类型
+     * - 大小
+     * - 修改时间
+     */
+    void showCurrentItemProperties();
+
 private:
     void setupUi();
     void setupModel();
@@ -134,6 +182,35 @@ private:
      * 支持名称 / 大小 / 修改时间的升序和降序。
      */
     void applySortMode();
+
+        /**
+     * @brief 获取右侧文件列表当前选中项对应的“源模型索引”
+     *
+     * 说明：
+     * 右侧表格现在使用的是代理模型，因此：
+     * - 当前 index 属于代理模型
+     * - 真正访问 QFileSystemModel 时，必须先 mapToSource()
+     */
+    QModelIndex currentSourceIndex() const;
+
+    /**
+     * @brief 将字节数格式化成更易读的字符串
+     * @param bytes 文件大小（字节）
+     * @return 例如 "512 B" / "12.35 KB" / "4.18 MB"
+     */
+    QString humanReadableSize(qint64 bytes) const;
+
+    /**
+     * @brief 给对话框统一应用深色样式
+     * @param widget 需要应用样式的对话框或窗口
+     *
+     * 用途：
+     * - QMessageBox
+     * - QInputDialog
+     *
+     * 这样可以避免默认主题下出现白底白字。
+     */
+    void applyDialogStyle(QWidget *widget);
 
 private:
         /**
